@@ -35,7 +35,7 @@ resource "aws_subnet" "subnet3" {
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = format("%s-public-subnet-3", var.prefix)
+    Name = format("%s-private-subnet-3", var.prefix)
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_subnet" "subnet4" {
   availability_zone = "us-east-1b"
 
   tags = {
-    Name = format("%s-public-subnet-4", var.prefix)
+    Name = format("%s-private-subnet-4", var.prefix)
   }
 }
 
@@ -116,7 +116,7 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.gw.id
+    gateway_id = aws_nat_gateway.nat.id
   }
 
   tags = {
