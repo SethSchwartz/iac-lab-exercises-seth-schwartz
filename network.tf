@@ -9,12 +9,15 @@ resource "aws_vpc" "main" {
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
 
 resource "aws_subnet" "public_subnets" {
   count = 2
   vpc_id = aws_vpc.main.id
   cidr_block = var.subnets[count.index].cidr
-  availability_zone = format("%s%s", var.region, var.subnets[count.index].az)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
     Name = format("%s-public-subnet-%s", var.prefix, count.index)
@@ -25,7 +28,7 @@ resource "aws_subnet" "private_subnets" {
   count = 2
   vpc_id = aws_vpc.main.id
   cidr_block = var.subnets[count.index + 2].cidr
-  availability_zone = format("%s%s", var.region, var.subnets[count.index + 2].az)
+  availability_zone = data.aws_availability_zones.available.names[count.index + 2]
 
   tags = {
     Name = format("%s-private-subnet-%s", var.prefix, count.index + 2)
@@ -37,7 +40,7 @@ resource "aws_subnet" "secure_subnets" {
 
   vpc_id = aws_vpc.main.id
   cidr_block = var.subnets[count.index + 4].cidr
-  availability_zone = format("%s%s", var.region, var.subnets[count.index + 4].az)
+  availability_zone = data.aws_availability_zones.available.names[count.index + 4]
 
   tags = {
     Name = format("%s-secure-subnet-%s", var.prefix, count.index + 4)
@@ -99,22 +102,32 @@ resource "aws_route_table" "private" {
   }
 }
 
-resource "aws_route_table_association" "public1" {
-  subnet_id      = aws_subnet.subnet1.id
+resource "aws_route_table_association" "public" {
+  for_each = {
+    public1 = aws_subnet.public_subnets[0].id
+    public2 = aws_subnet.public_subnets[1].id
+  }
+
+  subnet_id      = each.value
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table_association" "public2" {
-  subnet_id      = aws_subnet.subnet2.id
-  route_table_id = aws_route_table.public.id
-}
+resource "aws_route_table_association" "private" {
+  for_each = {
+    private1 = aws_subnet.private_subnets[0].id
+    private2 = aws_subnet.private_subnets[1].id
+  }
 
-resource "aws_route_table_association" "private1" {
-  subnet_id      = aws_subnet.subnet3.id
+  subnet_id      = each.value
   route_table_id = aws_route_table.private.id
 }
 
-resource "aws_route_table_association" "private2" {
-  subnet_id      = aws_subnet.subnet4.id
+resource "aws_route_table_association" "secure" {
+  for_each = {
+    private1 = aws_subnet.secure_subnets[0].id
+    private2 = aws_subnet.secure_subnets[1].id
+  }
+
+  subnet_id      = each.value
   route_table_id = aws_route_table.private.id
 }
