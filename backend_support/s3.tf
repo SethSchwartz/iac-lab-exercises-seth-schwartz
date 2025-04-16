@@ -5,6 +5,10 @@ resource "aws_s3_bucket" "backend-s3-ss" {
   tags = {
     Name        = "${var.prefix}-tfstate"
   }
+
+   lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_versioning" "backend-s3-versioning" {
