@@ -9,63 +9,38 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "subnet1" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.subnet1_cidr
-  availability_zone = "us-east-1a"
+
+resource "aws_subnet" "public_subnets" {
+  count = 2
+  vpc_id = aws_vpc.main.id
+  cidr_block = var.subnets[count.index].cidr
+  availability_zone = format("%s%s", var.region, var.subnets[count.index].az)
 
   tags = {
-    Name = format("%s-public-subnet-1", var.prefix)
+    Name = format("%s-public-subnet-%s", var.prefix, count.index)
   }
 }
 
-resource "aws_subnet" "subnet2" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.subnet2_cidr
-  availability_zone = "us-east-1a"
+resource "aws_subnet" "private_subnets" {
+  count = 2
+  vpc_id = aws_vpc.main.id
+  cidr_block = var.subnets[count.index + 2].cidr
+  availability_zone = format("%s%s", var.region, var.subnets[count.index + 2].az)
 
   tags = {
-    Name = format("%s-public-subnet-2", var.prefix)
+    Name = format("%s-private-subnet-%s", var.prefix, count.index + 2)
   }
 }
 
-resource "aws_subnet" "subnet3" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.subnet3_cidr
-  availability_zone = "us-east-1a"
+resource "aws_subnet" "secure_subnets" {
+  count = 2
+
+  vpc_id = aws_vpc.main.id
+  cidr_block = var.subnets[count.index + 4].cidr
+  availability_zone = format("%s%s", var.region, var.subnets[count.index + 4].az)
 
   tags = {
-    Name = format("%s-private-subnet-3", var.prefix)
-  }
-}
-
-resource "aws_subnet" "subnet4" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.subnet4_cidr
-  availability_zone = "us-east-1b"
-
-  tags = {
-    Name = format("%s-private-subnet-4", var.prefix)
-  }
-}
-
-resource "aws_subnet" "subnet5" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.subnet5_cidr
-  availability_zone = "us-east-1b"
-
-  tags = {
-    Name = format("%s-public-subnet-5", var.prefix)
-  }
-}
-
-resource "aws_subnet" "subnet6" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.subnet6_cidr
-  availability_zone = "us-east-1b"
-
-  tags = {
-    Name = format("%s-public-subnet-6", var.prefix)
+    Name = format("%s-secure-subnet-%s", var.prefix, count.index + 4)
   }
 }
 

@@ -43,3 +43,7 @@ variable "subnet6_cidr" {
   description = "subnet6_cidr"
 }
 
+variable "subnets" {
+  type = list(any)
+}
+
