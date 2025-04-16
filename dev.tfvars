@@ -4,26 +4,26 @@ vpc_cidr     = "192.168.1.0/25"
 subnets = [
   {
     az   = "a"
-    cidr = "192.168.1.0/28"
+    cidr = cidrsubnet(var.vpc_cidr, 4, 0)
   },
   {
     az   = "b"
-    cidr = "192.168.1.16/28"
+    cidr = cidrsubnet(var.vpc_cidr, 4, 1)
   },
   {
     az   = "a"
-    cidr = "192.168.1.32/28"
+    cidr = cidrsubnet(var.vpc_cidr, 4, 2)
   },
   {
     az   = "b"
-    cidr = "192.168.1.48/28"
+    cidr = cidrsubnet(var.vpc_cidr, 4, 3)
   },
   {
     az   = "a"
-    cidr = "192.168.1.64/28"
+    cidr = cidrsubnet(var.vpc_cidr, 4, 4)
   },
   {
     az   = "b"
-    cidr = "192.168.1.80/28"
+    cidr = cidrsubnet(var.vpc_cidr, 4, 5)
   }
 ]
