@@ -1,18 +1,19 @@
 resource "aws_s3_bucket" "backend-s3-ss" {
-  bucket = "${var.prefix}-bucket"
+  bucket        = "ss-iac-lab-bucket"
   force_destroy = true
 
   tags = {
-    Name        = "${var.prefix}-tfstate"
+    Name = "${var.prefix}-tfstate"
   }
 
-   lifecycle {
+  lifecycle {
     prevent_destroy = true
   }
 }
 
 resource "aws_s3_bucket_versioning" "backend-s3-versioning" {
   bucket = aws_s3_bucket.backend-s3-ss.id
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -23,7 +24,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "backend_s3_encryp
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
