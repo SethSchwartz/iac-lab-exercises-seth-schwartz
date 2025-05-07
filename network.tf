@@ -1,13 +1,4 @@
-resource "aws_vpc" "main" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_support   = "true"
-  enable_dns_hostnames = "true"
-  instance_tenancy     = "default"
 
-  tags = {
-    Name = "${var.prefix}-vpc"
-  }
-}
 
 data "aws_availability_zones" "available" {
   state = "available"
@@ -15,7 +6,7 @@ data "aws_availability_zones" "available" {
 
 resource "aws_subnet" "public_subnets" {
   count = 2
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.vpc.vpc_id
   cidr_block = var.subnets[count.index].cidr
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
@@ -26,9 +17,9 @@ resource "aws_subnet" "public_subnets" {
 
 resource "aws_subnet" "private_subnets" {
   count = 2
-  vpc_id = aws_vpc.main.id
-cidr_block = var.subnets[count.index + 2].cidr
-availability_zone = data.aws_availability_zones.available.names[count.index + 2]
+  vpc_id = module.vpc.vpc_id
+  cidr_block = var.subnets[count.index + 2].cidr
+  availability_zone = data.aws_availability_zones.available.names[count.index + 2]
 
   tags = {
     Name = format("%s-private-subnet-%s", var.prefix, count.index + 2)
@@ -38,7 +29,7 @@ availability_zone = data.aws_availability_zones.available.names[count.index + 2]
 resource "aws_subnet" "secure_subnets" {
   count = 2
 
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.vpc.vpc_id
   cidr_block = var.subnets[count.index + 4].cidr
   availability_zone = data.aws_availability_zones.available.names[count.index + 4]
 
@@ -48,7 +39,7 @@ resource "aws_subnet" "secure_subnets" {
 }
 
 resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.vpc.vpc_id
 
   tags = {
     Name = "${var.prefix}-gw"
@@ -77,7 +68,7 @@ resource "aws_nat_gateway" "nat" {
 }
 
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.vpc.vpc_id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -90,7 +81,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.vpc.vpc_id
 
   route {
     cidr_block = "0.0.0.0/0"
