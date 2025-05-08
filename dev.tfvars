@@ -27,3 +27,5 @@ subnets = [
     cidr = "192.168.1.80/28"
   }
 ]
+db_username = "postgres"
+db_name = "postgres"

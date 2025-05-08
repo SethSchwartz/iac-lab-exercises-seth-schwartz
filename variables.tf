@@ -14,8 +14,16 @@ variable "vpc_cidr" {
 }
 
 
-
 variable "subnets" {
   type = list(any)
 }
 
+variable "db_username" {
+  type        = string
+  description = "Database username"
+}
+
+variable "db_name" {
+  type        = string
+  description = "Database name"
+}

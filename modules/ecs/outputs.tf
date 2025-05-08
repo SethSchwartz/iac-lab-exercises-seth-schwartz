@@ -7,3 +7,8 @@ output "ecs_security_group_id" {
   description = "ECS Security group Id"
   value       = aws_security_group.ecs.id
 }
+
+output "website_url" {
+  description = "The website URL."
+  value       = format("http://%s/users", aws_alb.this.dns_name)
+}
