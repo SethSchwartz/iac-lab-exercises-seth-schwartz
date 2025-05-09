@@ -13,11 +13,6 @@ variable "vpc_cidr" {
   description = "vpc_cidr"
 }
 
-
-variable "subnets" {
-  type = list(any)
-}
-
 variable "db_username" {
   type        = string
   description = "Database username"
