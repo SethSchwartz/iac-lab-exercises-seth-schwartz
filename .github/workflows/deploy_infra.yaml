@@ -1,6 +1,6 @@
 name: Deploy Infra
 
-on: workflow_dispatch
+on: push
 
 env:
   AWS_REGION: us-east-1
@@ -28,8 +28,7 @@ jobs:
           role-to-assume: ${{ env.IAM_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get aws identity
-        run: |
-          aws sts get-caller-identity
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
 
-    # Can add extra steps to run Terraform to create the AWS resources
+
