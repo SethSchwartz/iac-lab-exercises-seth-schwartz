@@ -17,5 +17,5 @@ variable "vpc_cidr" {
 variable "repo_name" {
   type        = string
   description = "ECR repository name"
-  default = "ss/iac-lab-exercises-seth-schwartz"
+  default = "SethSchwartz/iac-lab-exercises-seth-schwartz"
 }
