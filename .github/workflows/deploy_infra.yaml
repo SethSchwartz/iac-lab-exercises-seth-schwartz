@@ -7,9 +7,6 @@ env:
   IAM_ROLE: arn:aws:iam::160071257600:role/ss-iac-lab-github-actions-role
 
 jobs:
-
-  # Can add extra jobs/steps to run any pre deploy tasks
-
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -28,19 +25,19 @@ jobs:
           role-to-assume: ${{ env.IAM_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Get aws identity
+        run: aws sts get-caller-identity
+
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: |
-          terraform init
+        run: terraform init
 
       - name: Terraform Plan
-        run: |
-          terraform plan -var-file="dev.tfvars"
+        run: terraform plan -var-file="dev.tfvars"
 
       - name: Terraform Apply
-        run: |
-            terraform apply -auto-approve -var-file="dev.tfvars"
+        run: terraform apply -auto-approve -var-file="dev.tfvars"
 
 
