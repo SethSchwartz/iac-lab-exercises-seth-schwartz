@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "backend-s3-ss" {
-  bucket        = "ss-iac-lab-bucket"
+  bucket        = "${var.prefix}-tfstate"
   force_destroy = true
 
   tags = {
