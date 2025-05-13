@@ -25,9 +25,6 @@ jobs:
           role-to-assume: ${{ env.IAM_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get aws identity
-        run: aws sts get-caller-identity
-
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v3
 
