@@ -7,8 +7,8 @@ env:
   IAM_ROLE: arn:aws:iam::160071257600:role/ss-iac-lab-github-actions-role
 
 jobs:
-  deploy:
-    name: Deploy
+  destroy:
+    name: "Destroy infra"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -30,6 +30,10 @@ jobs:
 
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -reconfigure
+        continue-on-error: false
 
       - name: Terraform Destroy
         run: terraform destroy -var-file="dev.tfvars" --auto-approve
